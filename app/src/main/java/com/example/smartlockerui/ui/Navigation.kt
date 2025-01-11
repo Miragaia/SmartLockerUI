@@ -9,6 +9,7 @@ import androidx.navigation.navArgument
 import com.example.smartlockerui.ui.screens.DisplayScreen
 import com.example.smartlockerui.ui.screens.EnterLockIDScreen
 import com.example.smartlockerui.ui.screens.EnterLockerPINScreen
+import com.example.smartlockerui.ui.screens.QRCodeUnlockScreen
 
 @Composable
 fun Navigation() {
@@ -26,6 +27,7 @@ fun Navigation() {
             val lockerID = backStackEntry.arguments?.getString("lockerID")
             EnterLockerPINScreen(lockerID = lockerID ?: "", navController)
         }
+        composable("qrCodeUnlock") { QRCodeUnlockScreen(navController) }
     }
 }
 

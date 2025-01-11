@@ -36,7 +36,7 @@ fun EnterLockIDScreen(navController: NavController) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Enter the Lock ID:",
+                text = "Enter the Locker ID:",
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.White

@@ -40,7 +40,7 @@ fun DisplayScreen(navController: NavController) {
                     navController.navigate("enterLockID")
                 }
                 UnlockOption(text = "QR Code") {
-                    // TODO: Add QR code scanning navigation
+                    navController.navigate("qrCodeUnlock")
                 }
             }
         }
