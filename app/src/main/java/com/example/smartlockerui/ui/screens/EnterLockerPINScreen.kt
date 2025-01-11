@@ -1,5 +1,7 @@
 package com.example.smartlockerui.ui.screens
 
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -15,12 +17,14 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.smartlockerui.ui.components.NumericPad
 import com.google.firebase.firestore.FirebaseFirestore
+import androidx.compose.ui.platform.LocalContext
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EnterLockerPINScreen(lockerID: String, navController: NavController) {
     val pin = remember { mutableStateOf("") }
     val firestore = FirebaseFirestore.getInstance()
+    val context = LocalContext.current
 
     Box(
         modifier = Modifier
@@ -68,7 +72,51 @@ fun EnterLockerPINScreen(lockerID: String, navController: NavController) {
 
             Button(
                 onClick = {
-                    // Validate PIN against Firestore (implement your logic here)
+                    val lockerBoxDocument = "GnsjLzCBcaTXV1TAdTvP"
+                    // Fetch the accessCode for the lockerID from Firestore
+                    firestore.collection("LockerBoxes")
+                        .document(lockerBoxDocument)
+                        .collection("Lockers")
+                        .document(lockerID)
+                        .get()
+                        .addOnSuccessListener { document ->
+                            if (document.exists()) {
+                                Log.d("EnterLockerPINScreen", "DocumentSnapshot data: ${document.data}")
+                                val accessCode = document.getString("accessCode")
+                                Log.d("EnterLockerPINScreen", "Access Code: $accessCode")
+                                if (accessCode == pin.value) {
+                                    // PIN is correct, navigate or unlock
+                                    Toast.makeText(
+                                        context,
+                                        "Locker unlocked successfully!",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                    // Add navigation or unlocking logic here
+                                } else {
+                                    // PIN is incorrect
+                                    Toast.makeText(
+                                        context,
+                                        "Incorrect PIN. Please try again.",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                }
+                            } else {
+                                // Locker ID doesn't exist
+                                Toast.makeText(
+                                    context,
+                                    "Locker ID not found.",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }
+                        }
+                        .addOnFailureListener { exception ->
+                            // Error fetching document
+                            Toast.makeText(
+                                context,
+                                "Error accessing Firestore: ${exception.message}",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -79,3 +127,4 @@ fun EnterLockerPINScreen(lockerID: String, navController: NavController) {
         }
     }
 }
+
