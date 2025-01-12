@@ -22,7 +22,8 @@ fun DisplayScreen(navController: NavController, userViewModel: UserViewModel) {
     val userId = userViewModel.userId.observeAsState()
 
     Surface(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
+        color = Color.Black // Set dark background
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             // Main content
@@ -34,7 +35,8 @@ fun DisplayScreen(navController: NavController, userViewModel: UserViewModel) {
                 Text(
                     text = "Welcome, ${userId.value ?: "Guest"}",
                     fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    color = Color.LightGray
                 )
 
                 Spacer(modifier = Modifier.height(24.dp))
@@ -42,7 +44,8 @@ fun DisplayScreen(navController: NavController, userViewModel: UserViewModel) {
                 Text(
                     text = "Unlock with:",
                     fontSize = 32.sp,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
                 )
 
                 Spacer(modifier = Modifier.height(24.dp))

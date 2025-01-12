@@ -10,6 +10,8 @@ import com.example.smartlockerui.ui.screens.DisplayScreen
 import com.example.smartlockerui.ui.screens.EnterLockIDScreen
 import com.example.smartlockerui.ui.screens.EnterLockerPINScreen
 import com.example.smartlockerui.ui.screens.LoginScreen
+import com.example.smartlockerui.ui.screens.LoginWithQrCodeScreen
+import com.example.smartlockerui.ui.screens.LoginWithUserIdScreen
 import com.example.smartlockerui.ui.screens.QRCodeUnlockScreen
 import com.example.smartlockerui.ui.screens.ReportErrorScreen
 import com.example.smartlockerui.ui.viewmodels.UserViewModel
@@ -21,6 +23,12 @@ import com.example.smartlockerui.ui.viewmodels.UserViewModel
         NavHost(navController = navController, startDestination = "login") {
             composable("login") {
                 LoginScreen(navController, userViewModel) // Add LoginScreen as the first screen
+            }
+            composable("loginWithUserId") {
+                LoginWithUserIdScreen(navController, userViewModel)
+            }
+            composable("loginWithQrCode") {
+                LoginWithQrCodeScreen(navController, userViewModel)
             }
             composable("home") {
                 DisplayScreen(navController, userViewModel)
