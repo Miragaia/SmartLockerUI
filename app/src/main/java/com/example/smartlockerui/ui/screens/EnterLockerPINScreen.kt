@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -18,13 +19,16 @@ import androidx.navigation.NavHostController
 import com.example.smartlockerui.ui.components.NumericPad
 import com.google.firebase.firestore.FirebaseFirestore
 import androidx.compose.ui.platform.LocalContext
+import com.example.smartlockerui.ui.viewmodels.UserViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EnterLockerPINScreen(lockerID: String, navController: NavController) {
+fun EnterLockerPINScreen(lockerID: String, navController: NavController,  userViewModel: UserViewModel) {
     val pin = remember { mutableStateOf("") }
     val firestore = FirebaseFirestore.getInstance()
     val context = LocalContext.current
+
+    val userId by userViewModel.userId.observeAsState()
 
     Box(
         modifier = Modifier
@@ -38,7 +42,11 @@ fun EnterLockerPINScreen(lockerID: String, navController: NavController) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Enter the PIN for Locker ID: $lockerID",
+                text = if (userId != null) {
+                    "Hello, User $userId! Enter the PIN for Locker ID: $lockerID"
+                } else {
+                    "Enter the PIN for Locker ID: $lockerID"
+                },
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.White
@@ -91,6 +99,7 @@ fun EnterLockerPINScreen(lockerID: String, navController: NavController) {
                                         "Locker unlocked successfully!",
                                         Toast.LENGTH_LONG
                                     ).show()
+                                    Log.d("EnterLockerPINScreen", "User $userId unlocked locker $lockerID")
                                     // Add navigation or unlocking logic here
                                 } else {
                                     // PIN is incorrect

@@ -20,15 +20,22 @@ import androidx.navigation.NavController
 import com.google.zxing.integration.android.IntentIntegrator
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import com.example.smartlockerui.ui.viewmodels.UserViewModel
 
 @Composable
-fun QRCodeUnlockScreen(navController: NavController) {
+fun QRCodeUnlockScreen(navController: NavController, userViewModel: UserViewModel) {
+
+    val userId by userViewModel.userId.observeAsState()
+
     val launcher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         val intent = result.data
         if (result.resultCode == android.app.Activity.RESULT_OK && intent != null) {
             val scannedResult = IntentIntegrator.parseActivityResult(result.resultCode, intent)?.contents
             if (scannedResult != null) {
                 Log.d("QRCodeUnlockScreen", "Scanned QR Code: $scannedResult")
+                Log.d("QRCodeUnlockScreen", "User ID: $userId")
                 // Navigate to EnterLockerPINScreen with the scanned Locker ID
                 navController.navigate("enterLockerPIN/$scannedResult")
             } else {

@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -15,14 +16,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.smartlockerui.ui.components.NumericPad
+import com.example.smartlockerui.ui.viewmodels.UserViewModel
 import com.google.firebase.firestore.FirebaseFirestore
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EnterLockIDScreen(navController: NavController) {
+fun EnterLockIDScreen(navController: NavController, userViewModel: UserViewModel) {
     val lockID = remember { mutableStateOf("") }
     val context = LocalContext.current
     val firestore = FirebaseFirestore.getInstance()
+
+    val userId by userViewModel.userId.observeAsState()
 
     Box(
         modifier = Modifier
@@ -76,6 +80,11 @@ fun EnterLockIDScreen(navController: NavController) {
 
                     if (enteredLockID.isEmpty()) {
                         Toast.makeText(context, "Please enter a Locker ID", Toast.LENGTH_SHORT).show()
+                        return@Button
+                    }
+
+                    if (userId == null) {
+                        Toast.makeText(context, "User not logged in", Toast.LENGTH_LONG).show()
                         return@Button
                     }
 
