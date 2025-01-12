@@ -63,6 +63,23 @@ fun DisplayScreen(navController: NavController, userViewModel: UserViewModel) {
                 }
             }
 
+            Button(
+                onClick = {
+                    userViewModel.clearUserId() // Clear user ID
+                    navController.navigate("login") { popUpTo(0) } // Navigate to login screen
+                },
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+                    .padding(16.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Gray,
+                    contentColor = Color.White
+                ),
+                contentPadding = PaddingValues(8.dp)
+            ) {
+                Text("Logout", fontSize = 14.sp)
+            }
+
             // Error button
             Button(
                 onClick = { navController.navigate("reportError") },
@@ -77,6 +94,7 @@ fun DisplayScreen(navController: NavController, userViewModel: UserViewModel) {
             ) {
                 Text("Report", fontSize = 12.sp)
             }
+
         }
     }
 }
