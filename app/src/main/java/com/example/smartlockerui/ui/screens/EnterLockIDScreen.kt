@@ -75,7 +75,7 @@ fun EnterLockIDScreen(navController: NavController, userViewModel: UserViewModel
             Button(
                 onClick = {
                     // Validate Locker ID in Firestore
-                    val lockerBoxDocument = "GnsjLzCBcaTXV1TAdTvP" // Replace with your specific document name
+                    val lockerBoxDocument = "1" // Replace with your specific document name
                     val enteredLockID = lockID.value
 
                     if (enteredLockID.isEmpty()) {
