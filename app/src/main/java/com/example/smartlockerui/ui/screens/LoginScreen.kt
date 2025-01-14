@@ -52,7 +52,7 @@ fun LoginScreen(navController: NavController, userViewModel: UserViewModel) {
                         navController.navigate("loginWithUserId")
                     }
                     UnlockOption(text = "QR Code") {
-                        navController.navigate("loginWithQrCode")
+                        navController.navigate("qrCodeUnlock")
                     }
                 }
             }

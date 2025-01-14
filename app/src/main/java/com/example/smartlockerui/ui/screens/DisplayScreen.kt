@@ -19,7 +19,7 @@ import androidx.compose.runtime.livedata.observeAsState
 @Composable
 fun DisplayScreen(navController: NavController, userViewModel: UserViewModel) {
     // Collect userId from ViewModel
-    val userId = userViewModel.userId.observeAsState()
+    val userId = userViewModel.userToken.observeAsState()
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -33,7 +33,7 @@ fun DisplayScreen(navController: NavController, userViewModel: UserViewModel) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "Welcome, ${userId.value ?: "Guest"}",
+                    text = "Welcome.",
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.LightGray
@@ -65,7 +65,7 @@ fun DisplayScreen(navController: NavController, userViewModel: UserViewModel) {
 
             Button(
                 onClick = {
-                    userViewModel.clearUserId() // Clear user ID
+                    userViewModel.clearUserToken() // Clear user ID
                     navController.navigate("login") { popUpTo(0) } // Navigate to login screen
                 },
                 modifier = Modifier

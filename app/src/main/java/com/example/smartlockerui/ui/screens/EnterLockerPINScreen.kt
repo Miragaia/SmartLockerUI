@@ -4,6 +4,8 @@ import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
@@ -13,22 +15,22 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
 import com.example.smartlockerui.ui.components.NumericPad
 import com.google.firebase.firestore.FirebaseFirestore
 import androidx.compose.ui.platform.LocalContext
 import com.example.smartlockerui.ui.viewmodels.UserViewModel
 
+
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EnterLockerPINScreen(lockerID: String, navController: NavController,  userViewModel: UserViewModel) {
+    val TAG = "EnterLockerPINScreen"
     val pin = remember { mutableStateOf("") }
     val firestore = FirebaseFirestore.getInstance()
     val context = LocalContext.current
-
-    val userId by userViewModel.userId.observeAsState()
+    val userToken by userViewModel.userToken.observeAsState()
 
     Box(
         modifier = Modifier
@@ -37,13 +39,13 @@ fun EnterLockerPINScreen(lockerID: String, navController: NavController,  userVi
             .padding(16.dp)
     ) {
         Column(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = if (userId != null) {
-                    "Hello, User $userId! Enter the PIN for Locker ID: $lockerID"
+                text = if (userToken != null) {
+                    "Hello, User! Enter the PIN for Locker ID: $lockerID"
                 } else {
                     "Enter the PIN for Locker ID: $lockerID"
                 },
@@ -80,7 +82,7 @@ fun EnterLockerPINScreen(lockerID: String, navController: NavController,  userVi
 
             Button(
                 onClick = {
-                    val lockerBoxDocument = "GnsjLzCBcaTXV1TAdTvP"
+                    val lockerBoxDocument = "1"
                     // Fetch the accessCode for the lockerID from Firestore
                     firestore.collection("LockerBoxes")
                         .document(lockerBoxDocument)
@@ -89,26 +91,28 @@ fun EnterLockerPINScreen(lockerID: String, navController: NavController,  userVi
                         .get()
                         .addOnSuccessListener { document ->
                             if (document.exists()) {
-                                Log.d("EnterLockerPINScreen", "DocumentSnapshot data: ${document.data}")
-                                val accessCode = document.getString("accessCode")
-                                Log.d("EnterLockerPINScreen", "Access Code: $accessCode")
-                                if (accessCode == pin.value) {
-                                    // PIN is correct, navigate or unlock
-                                    Toast.makeText(
-                                        context,
-                                        "Locker unlocked successfully!",
-                                        Toast.LENGTH_LONG
-                                    ).show()
-                                    Log.d("EnterLockerPINScreen", "User $userId unlocked locker $lockerID")
-                                    // Add navigation or unlocking logic here
-                                } else {
-                                    // PIN is incorrect
-                                    Toast.makeText(
-                                        context,
-                                        "Incorrect PIN. Please try again.",
-                                        Toast.LENGTH_LONG
-                                    ).show()
-                                }
+                                Log.d(TAG, "Unlocking with cloud function")
+                                userViewModel.lockLocker(lockerBoxDocument, lockerID, pin.value, onResult = { success ->
+                                    if (success) {
+                                        // Locker unlocked successfully
+                                        Toast.makeText(
+                                            context,
+                                            "Locker unlocked successfully!",
+                                            Toast.LENGTH_LONG
+                                        ).show()
+                                        Log.d(TAG, "User $userToken unlocked locker $lockerID")
+                                        userViewModel.clearUserToken()
+                                        navController.navigate("login")
+                                        // Add navigation or unlocking logic here
+                                    } else {
+                                        // Locker unlock failed
+                                        Toast.makeText(
+                                            context,
+                                            "Incorrect PIN or auth session has expired. Please try again.",
+                                            Toast.LENGTH_LONG
+                                        ).show()
+                                    }
+                                })
                             } else {
                                 // Locker ID doesn't exist
                                 Toast.makeText(

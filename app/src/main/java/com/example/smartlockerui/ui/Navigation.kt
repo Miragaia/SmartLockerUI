@@ -27,9 +27,6 @@ import com.example.smartlockerui.ui.viewmodels.UserViewModel
             composable("loginWithUserId") {
                 LoginWithUserIdScreen(navController, userViewModel)
             }
-            composable("loginWithQrCode") {
-                LoginWithQrCodeScreen(navController, userViewModel)
-            }
             composable("home") {
                 DisplayScreen(navController, userViewModel)
             }

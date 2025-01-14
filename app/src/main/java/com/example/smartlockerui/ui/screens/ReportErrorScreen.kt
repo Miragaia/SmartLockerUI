@@ -16,7 +16,7 @@ import com.example.smartlockerui.ui.viewmodels.UserViewModel
 fun ReportErrorScreen(navController: NavController, userViewModel: UserViewModel) {
     // State variable to hold the user's input
     var errorMessage by remember { mutableStateOf("") }
-    val userId by userViewModel.userId.observeAsState()
+    val userId by userViewModel.userToken.observeAsState()
 
     Surface(
         modifier = Modifier.fillMaxSize()

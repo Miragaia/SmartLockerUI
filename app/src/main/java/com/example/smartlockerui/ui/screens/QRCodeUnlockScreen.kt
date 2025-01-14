@@ -24,20 +24,25 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import com.example.smartlockerui.ui.viewmodels.UserViewModel
 
+const val TAG = "QRCodeUnlockScreen"
+
 @Composable
 fun QRCodeUnlockScreen(navController: NavController, userViewModel: UserViewModel) {
 
-    val userId by userViewModel.userId.observeAsState()
+    val userId by userViewModel.userToken.observeAsState()
 
     val launcher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        Log.d(TAG, "Scanning result: $result")
         val intent = result.data
         if (result.resultCode == android.app.Activity.RESULT_OK && intent != null) {
             val scannedResult = IntentIntegrator.parseActivityResult(result.resultCode, intent)?.contents
             if (scannedResult != null) {
-                Log.d("QRCodeUnlockScreen", "Scanned QR Code: $scannedResult")
-                Log.d("QRCodeUnlockScreen", "User ID: $userId")
+                Log.d(TAG, "Scanned QR Code: $scannedResult")
+                userViewModel.setUserToken(scannedResult)
+                Log.d(TAG, "User ID: $userId")
                 // Navigate to EnterLockerPINScreen with the scanned Locker ID
-                navController.navigate("enterLockerPIN/$scannedResult")
+
+                navController.navigate("home")
             } else {
                 Log.d("QRCodeUnlockScreen", "Scan canceled or failed")
             }
@@ -53,7 +58,7 @@ fun QRCodeUnlockScreen(navController: NavController, userViewModel: UserViewMode
         intentIntegrator.setPrompt("Scan a QR Code")
 
         // Set to use the front camera
-        intentIntegrator.setCameraId(1) // 1 typically corresponds to the front camera
+        // intentIntegrator.setCameraId(1) // 1 typically corresponds to the front camera
         launcher.launch(intentIntegrator.createScanIntent())
     }
 

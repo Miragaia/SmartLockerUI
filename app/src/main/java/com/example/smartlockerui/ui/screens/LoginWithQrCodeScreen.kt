@@ -36,7 +36,7 @@ fun LoginWithQrCodeScreen(navController: NavController, userViewModel: UserViewM
             Button(
                 onClick = {
                     // Simulate setting a user ID after QR code scan
-                    userViewModel.setUserId("QRUser123")
+                    userViewModel.setUserToken("QRUser123")
                     navController.navigate("home")
                 },
                 colors = ButtonDefaults.buttonColors(

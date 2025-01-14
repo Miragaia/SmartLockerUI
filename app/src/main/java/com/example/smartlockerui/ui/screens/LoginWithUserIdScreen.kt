@@ -74,7 +74,7 @@ fun LoginWithUserIdScreen(navController: NavController, userViewModel: UserViewM
                         Toast.makeText(context, "Please enter a User ID", Toast.LENGTH_SHORT).show()
                         return@Button
                     }
-                    userViewModel.setUserId(enteredUserId)
+                    userViewModel.setUserToken(enteredUserId)
                     navController.navigate("home")
                 },
                 modifier = Modifier

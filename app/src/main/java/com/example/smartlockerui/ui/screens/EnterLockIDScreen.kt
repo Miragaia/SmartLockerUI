@@ -4,6 +4,8 @@ import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
@@ -26,7 +28,7 @@ fun EnterLockIDScreen(navController: NavController, userViewModel: UserViewModel
     val context = LocalContext.current
     val firestore = FirebaseFirestore.getInstance()
 
-    val userId by userViewModel.userId.observeAsState()
+    val userId by userViewModel.userToken.observeAsState()
 
     Box(
         modifier = Modifier
@@ -35,9 +37,9 @@ fun EnterLockIDScreen(navController: NavController, userViewModel: UserViewModel
             .padding(16.dp)
     ) {
         Column(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.SpaceBetween,
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
                 text = "Enter the Locker ID:",
